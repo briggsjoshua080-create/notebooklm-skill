@@ -45,7 +45,8 @@
       diffs: [1, 2, 3, 4],   // enabled difficulties
       lastDay: null,         // YYYY-MM-DD of last completion
       streak: 0,
-      seenHint: false
+      seenHint: false,
+      reminder: { enabled: false, time: "18:00", lastFired: null }
     };
   }
   function load() {
@@ -383,6 +384,66 @@
   /* ---- Haptics ---- */
   function buzz(pat) { if (navigator.vibrate) try { navigator.vibrate(pat); } catch (e) {} }
 
+  /* ---- Daily reminder ----
+   * Best-effort only: fires while this tab/app is open or briefly backgrounded.
+   * No backend means no true wake-the-closed-app push; the README's Shortcuts
+   * automation is the reliable path on iOS. This is a free bonus on top. */
+  function notifAvailable() { return typeof Notification !== "undefined"; }
+  function updateReminderUI() {
+    var on = state.reminder.enabled;
+    $("reminderToggle").classList.toggle("on", on);
+    $("reminderLabel").textContent = on ? "On · " + state.reminder.time : "Off";
+    $("reminderTime").value = state.reminder.time;
+  }
+  function toggleReminder() {
+    if (state.reminder.enabled) {
+      state.reminder.enabled = false; save(); updateReminderUI();
+      return;
+    }
+    if (!notifAvailable()) {
+      toast("Notifications aren't supported in this tab — add Approach to your Home Screen first, then try again.");
+      return;
+    }
+    Notification.requestPermission().then(function (perm) {
+      if (perm !== "granted") {
+        toast("Permission denied — enable notifications for Approach in your phone settings to use this.");
+        return;
+      }
+      state.reminder.enabled = true; save(); updateReminderUI();
+      toast("Daily reminder on for " + state.reminder.time);
+    });
+  }
+  function checkReminder() {
+    if (!state.reminder.enabled || !notifAvailable() || Notification.permission !== "granted") return;
+    var now = new Date();
+    var today = now.toISOString().slice(0, 10);
+    if (state.reminder.lastFired === today) return;
+    var parts = state.reminder.time.split(":");
+    var target = new Date(now); target.setHours(+parts[0], +parts[1] || 0, 0, 0);
+    if (now < target) return;
+    state.reminder.lastFired = today; save();
+    var msg = state.lastDay === today
+      ? "Nice, you already trained today 💪 Want another rep?"
+      : "Today's approach mission is waiting 💬 Five minutes is all it takes.";
+    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+      navigator.serviceWorker.ready.then(function (reg) {
+        reg.showNotification("Approach", { body: msg, icon: "icons/icon-192.png", tag: "daily-reminder" });
+      });
+    } else {
+      try { new Notification("Approach", { body: msg, icon: "icons/icon-192.png" }); } catch (e) {}
+    }
+  }
+  setInterval(checkReminder, 60000);
+
+  function nudgeIfMissedToday() {
+    var today = new Date().toISOString().slice(0, 10);
+    if (state.done > 0 && state.lastDay !== today) {
+      setTimeout(function () {
+        toast("👋 No mission done today yet — streak: " + state.streak + (state.streak === 1 ? " day" : " days"));
+      }, 900);
+    }
+  }
+
   /* ---- Profile / settings panel ---- */
   var panel = $("panel");
   function openPanel() { renderPanel(); panel.classList.add("show"); }
@@ -393,6 +454,7 @@
     $("sXp").textContent = state.xp;
     $("sDone").textContent = state.done;
     $("sStreak").textContent = state.streak;
+    updateReminderUI();
 
     // category chips
     var cc = $("catChips").children;
@@ -442,6 +504,13 @@
     else if (state.diffs.length > 1) state.diffs.splice(k, 1); // keep at least one
     save(); current = null; renderPanel(); renderDeck();
   });
+  $("reminderToggle").addEventListener("click", toggleReminder);
+  $("reminderTime").addEventListener("change", function (e) {
+    state.reminder.time = e.target.value;
+    state.reminder.lastFired = null;
+    save(); updateReminderUI();
+    if (state.reminder.enabled) toast("Reminder set for " + state.reminder.time);
+  });
   $("resetBtn").addEventListener("click", function () {
     if (confirm("Reset all XP, levels and progress? This can't be undone.")) {
       state = defaultState(); save();
@@ -466,6 +535,8 @@
   /* ---- Boot ---- */
   renderHeader();
   renderDeck();
+  checkReminder();
+  nudgeIfMissedToday();
 
   // register service worker (offline / installable)
   if ("serviceWorker" in navigator) {

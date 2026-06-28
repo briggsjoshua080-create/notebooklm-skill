@@ -118,6 +118,19 @@
       <button class="chip" data-d="4">Elite · 100xp</button>
     </div>
 
+    <div class="section-title">Daily reminder</div>
+    <div class="reminder-card">
+      <div class="reminder-row">
+        <button class="switch" id="reminderToggle" aria-label="Toggle daily reminder"><span></span></button>
+        <div class="reminder-text">
+          <div class="reminder-state" id="reminderLabel">Off</div>
+          <div class="reminder-sub">A nudge to do today's mission</div>
+        </div>
+        <input type="time" id="reminderTime" value="18:00" />
+      </div>
+      <p class="reminder-note">Fires while Approach is open or recently active in the background. Browsers can't reliably wake a closed app at a set time — for a guaranteed nudge on iPhone, set up a free <b>Shortcuts</b> automation (steps in the README).</p>
+    </div>
+
     <div class="section-title">Level ladder</div>
     <div class="ladder" id="ladder"></div>
 

@@ -36,30 +36,85 @@ accounts, no servers, no tracking — all progress is stored locally on your pho
 
 ---
 
-## Put it on your home screen
+## Where do I open this app?
 
-The app lives entirely in this `docs/` folder, so the easiest way to host it for
-free is **GitHub Pages**:
+The code lives in this `docs/` folder, but it isn't hosted anywhere yet — that's
+a one-time, 30-second step on GitHub's side:
 
-1. Push this repo to GitHub.
-2. Go to **Settings → Pages**.
-3. Under *Build and deployment*, choose **Deploy from a branch**, pick your branch,
-   and set the folder to **`/docs`**. Save.
-4. After a minute GitHub gives you a URL like
-   `https://<you>.github.io/<repo>/`.
+1. On GitHub, open this repo (`notebooklm-skill`) → **Settings → Pages**.
+2. Under *Build and deployment* → *Source*, choose **Deploy from a branch**.
+3. Set **Branch** to `claude/cold-approach-coach-app-ty2iww` (this branch — or
+   `master` once it's merged) and the folder to **`/docs`**. Click **Save**.
+4. Wait ~1 minute, then refresh the Pages settings page. GitHub shows your live
+   URL, something like:
+   `https://briggsjoshua080-create.github.io/notebooklm-skill/`
 
-Then on your phone:
+That URL *is* the app. Open it on your phone:
 
-- **iPhone (Safari):** open the URL → tap the **Share** button → **Add to Home
-  Screen**. It launches full-screen like a native app with its own icon.
-- **Android (Chrome):** open the URL → menu **⋮** → **Install app** / **Add to
-  Home screen**.
+- **iPhone (Safari):** open the URL → tap the **Share** icon (square with an
+  arrow) → **Add to Home Screen** → **Add**. A real app icon appears on your
+  home screen and it opens full-screen, no browser bar.
+- **Android (Chrome):** open the URL → tap **⋮** → **Install app** (or **Add to
+  Home screen**).
 
-Because it's a PWA with a service worker, it works **offline** after the first load.
+After the first load it's cached, so it keeps working **offline**.
 
-> Prefer not to use GitHub Pages? Any static host works (Netlify, Vercel, Cloudflare
-> Pages, or even opening `index.html` locally). It just needs HTTPS for the
-> "install" / offline features to fully kick in.
+> Prefer not to use GitHub Pages? Any static host works (Netlify, Vercel,
+> Cloudflare Pages, or just opening `index.html` locally). It needs HTTPS for
+> install/offline/notifications to fully work.
+
+---
+
+## How to use it
+
+1. **Open the app.** The top card shows a mission: a difficulty badge (Warm-up /
+   Medium / Hard / Elite), who it's for, the line/dare itself, a coaching tip,
+   and the XP it's worth.
+2. **Swipe.** Drag the card — **left to skip** it, **right to accept** it. (Or
+   use the ✕ / ✓ buttons at the bottom; arrow keys work too if you're testing on
+   a laptop.) Tap 💡 anytime to re-read the coaching tip for the current card.
+3. **Accepting starts the clock.** A 5:00 countdown ring appears. Go do the
+   mission for real, right now.
+4. **Report back.** Tap **"I did it 🙌"** to bank the XP (full XP if the ring
+   hadn't run out, half if it had — you're still rewarded for honesty). Tap
+   **"Not this time"** if you bailed — no penalty beyond the rep not counting.
+5. **Watch your level climb.** XP fills the bar under your name; level-ups get
+   a confetti moment. Tap the 👤 icon top-right anytime to see your stats, switch
+   who you're practicing on (attractive / any stranger / everyone), turn
+   difficulty tiers on or off, set up daily reminders, or check the level ladder.
+
+---
+
+## Daily reminders
+
+In **Settings (👤) → Daily reminder**, flip the toggle and pick a time. The
+app will ask for notification permission once, then try to nudge you at that
+time each day with a one-line reminder.
+
+**The honest limitation:** browsers can't reliably wake a fully-closed app at a
+scheduled time without a server sending the notification (true "push"). This
+in-app toggle is a free bonus that works well if Approach is open, or was
+recently open, around your chosen time — but it can't be guaranteed to fire if
+your phone has had the app fully closed for hours.
+
+**For a reminder that always fires, even with the app closed (iPhone):**
+
+1. Open the **Shortcuts** app (built into iOS).
+2. Go to the **Automation** tab → **+** → **Create Personal Automation**.
+3. Choose **Time of Day**, set the time you want your daily nudge, set it to
+   repeat **Daily**, then **Next**.
+4. Tap **Add Action**, search for **"Show Notification"**, add it, and type
+   something like *"Time for today's Approach mission 💬"*.
+5. Tap **Next** → **Done**. On the automation's settings, turn **off** "Ask
+   Before Running" so it fires silently without a confirmation prompt.
+
+That's a real, guaranteed local notification — zero code, zero servers. Tapping
+it just dismisses it; tapping the **Approach** icon on your home screen right
+after takes you straight into a mission.
+
+(Android: **Settings → Clock/Digital Wellbeing → Set a daily alarm or reminder**
+pointed at "open Approach", or use an automation app like Tasker/Macrodroid the
+same way.)
 
 ---
 

@@ -1,5 +1,5 @@
 /* Approach — service worker: cache-first offline shell */
-var CACHE = "approach-v1";
+var CACHE = "approach-v2";
 var ASSETS = [
   ".",
   "index.html",
@@ -28,6 +28,16 @@ self.addEventListener("activate", function (e) {
       if (k !== CACHE) return caches.delete(k);
     }));
   }).then(function () { return self.clients.claim(); }));
+});
+
+self.addEventListener("notificationclick", function (e) {
+  e.notification.close();
+  e.waitUntil(
+    self.clients.matchAll({ type: "window" }).then(function (list) {
+      for (var i = 0; i < list.length; i++) if ("focus" in list[i]) return list[i].focus();
+      if (self.clients.openWindow) return self.clients.openWindow(".");
+    })
+  );
 });
 
 self.addEventListener("fetch", function (e) {
