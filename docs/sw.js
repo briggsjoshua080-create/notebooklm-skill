@@ -1,11 +1,12 @@
 /* Approach — service worker: cache-first offline shell */
-var CACHE = "approach-v2";
+var CACHE = "approach-v3";
 var ASSETS = [
   ".",
   "index.html",
   "styles.css",
   "app.js",
   "openers.js",
+  "openers_de.js",
   "manifest.webmanifest",
   "icons/icon-192.png",
   "icons/icon-512.png",
