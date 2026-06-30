@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <title>Approach — Cold Approach Coach</title>
+  <meta name="description" content="Daily cold-approach missions. Swipe, accept, do it in 5 minutes, earn XP, level up your social courage." />
+  <meta name="theme-color" content="#080910" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Approach" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">💬</div>
+        <div>
+          <h1>Approach</h1>
+          <p id="brandSub">Your cold-approach coach</p>
+        </div>
+      </div>
+      <button class="iconbtn lang-btn" id="langBtn" aria-label="Switch language">EN</button>
+      <button class="iconbtn" id="profileBtn" aria-label="Profile">👤</button>
+    </div>
+
+    <!-- Level / XP -->
+    <div class="levelcard">
+      <div class="levelrow">
+        <span class="lvl">Level <b id="levelNum">1</b></span>
+        <span class="title" id="levelTitle">Wallflower</span>
+      </div>
+      <div class="xpwrap"><div class="xpbar" id="xpBar"></div></div>
+      <div class="xpmeta"><span id="xpNow">0 XP</span><span id="xpNext">50 XP to level 2</span></div>
+    </div>
+
+    <!-- Deck -->
+    <div class="deck-wrap">
+      <div class="hint" id="deckHint">← swipe to skip&nbsp;&nbsp;·&nbsp;&nbsp;swipe to accept →</div>
+      <div class="deck" id="deck"></div>
+      <div class="empty" id="empty">
+        <div style="font-size:40px">🎯</div>
+        <h3 id="emptyTitle">No missions match your filters</h3>
+        <p id="emptyBody">Open your profile and widen the category or difficulty.</p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="act no" id="skipBtn" aria-label="Skip">✕</button>
+      <button class="act info" id="infoBtn" aria-label="Coaching tip">💡</button>
+      <button class="act yes" id="acceptBtn" aria-label="Accept">✓</button>
+    </div>
+  </div>
+
+  <!-- Mission timer sheet -->
+  <div class="sheet" id="sheet">
+    <div class="sheet-inner">
+      <div class="mission-head">
+        <span class="label" id="missionLabelEl">Mission accepted</span>
+        <button class="iconbtn" id="closeSheet" aria-label="Cancel">✕</button>
+      </div>
+      <div class="timer" id="timerBox">
+        <div class="ring">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#b07820" />
+                <stop offset="100%" stop-color="#e0aa4a" />
+              </linearGradient>
+            </defs>
+            <circle class="track" cx="75" cy="75" r="66" fill="none" stroke-width="10" />
+            <circle class="prog" id="ringProg" cx="75" cy="75" r="66" fill="none" stroke-width="10"
+                    stroke-dasharray="414.7" stroke-dashoffset="0" />
+          </svg>
+          <div class="time" id="timeText">5:00</div>
+        </div>
+        <small id="timerSub">5 minutes to make it happen</small>
+      </div>
+      <div class="mission-line" id="missionLine"></div>
+      <div class="mission-actions">
+        <button class="btn primary" id="doneBtn">I did it 🙌</button>
+        <button class="btn ghost" id="failBtn">Not this time</button>
+        <button class="btn ghost" id="shareBtn" style="font-size:13px">Share this mission 📤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile / settings -->
+  <div class="panel" id="panel">
+    <div class="panel-head">
+      <h2 id="panelTitle">Your progress</h2>
+      <button class="iconbtn" id="closePanel" aria-label="Close">✕</button>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="n" id="sLevel">1</div><div class="l" id="sTitle">Wallflower</div></div>
+      <div class="stat"><div class="n" id="sXp">0</div><div class="l" id="statXpLabel">Total XP</div></div>
+      <div class="stat"><div class="n" id="sDone">0</div><div class="l" id="statDoneLabel">Missions completed</div></div>
+      <div class="stat"><div class="n" id="sStreak">0</div><div class="l" id="statStreakLabel">Day streak 🔥</div></div>
+    </div>
+
+    <div class="section-title" id="catTitle">Who are you opening?</div>
+    <div class="chips" id="catChips">
+      <button class="chip" data-cat="both">Everyone</button>
+      <button class="chip" data-cat="attractive">Someone attractive</button>
+      <button class="chip" data-cat="stranger">Any stranger</button>
+    </div>
+
+    <div class="section-title" id="diffTitle">Difficulty</div>
+    <div class="chips" id="diffChips">
+      <button class="chip" data-d="1">Warm-up · 10xp</button>
+      <button class="chip" data-d="2">Medium · 25xp</button>
+      <button class="chip" data-d="3">Hard · 50xp</button>
+      <button class="chip" data-d="4">Elite · 100xp</button>
+    </div>
+
+    <div class="section-title" id="reminderTitle">Daily reminder</div>
+    <div class="reminder-card">
+      <div class="reminder-row">
+        <button class="switch" id="reminderToggle" aria-label="Toggle daily reminder"><span></span></button>
+        <div class="reminder-text">
+          <div class="reminder-state" id="reminderLabel">Off</div>
+          <div class="reminder-sub" id="reminderSubEl">A nudge to do today's mission</div>
+        </div>
+        <input type="time" id="reminderTime" value="18:00" />
+      </div>
+      <p class="reminder-note">Fires while Approach is open or recently active in the background. Browsers can't reliably wake a closed app at a set time — for a guaranteed nudge on iPhone, set up a free <b>Shortcuts</b> automation (steps in the README).</p>
+    </div>
+
+    <div class="section-title" id="ladderTitle">Level ladder</div>
+    <div class="ladder" id="ladder"></div>
+
+    <button class="danger" id="resetBtn" style="margin-bottom:10px">Reset all progress</button>
+  </div>
+
+  <!-- Level up -->
+  <div class="levelup" id="levelup">
+    <div class="levelup-card">
+      <div class="burst">🚀</div>
+      <h2>Level up</h2>
+      <p class="big" id="luLevel">Level 2</p>
+      <p class="sub" id="luTitle">Observer</p>
+      <button class="btn primary" id="luClose" style="margin-top:8px">Keep going</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <canvas id="fx"></canvas>
+
+  <script src="openers.js"></script>
+  <script src="openers_de.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
