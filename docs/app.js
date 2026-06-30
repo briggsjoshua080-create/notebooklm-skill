@@ -132,7 +132,7 @@
       confirmReset: "Alle XP, Level und Fortschritte zurücksetzen? Das kann nicht rückgängig gemacht werden.",
       notifBody1: "Super, du hast heute schon trainiert 💪 Noch eine Runde?",
       notifBody2: "Deine heutige Mission wartet 💬 Fünf Minuten reichen.",
-      shareText: function (text) { return "Mission: „" + text + "" — Approach Ansprech-Coach"; }
+      shareText: function (text) { return "Mission: „" + text + "“ — Approach Ansprech-Coach"; }
     }
   };
 
